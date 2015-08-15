@@ -22,34 +22,39 @@ import io.indico.utils.IndicoException;
  */
 public class ImageApi extends ApiClient {
     Api api;
+    boolean minResize;
 
     public ImageApi(Context context, Api api, String apiKey) {
         super(context, apiKey);
         assert context != null;
         this.api = api;
         this.context = context;
+        this.minResize = (boolean) api.get("minResize");
     }
 
 
     public void predict(Bitmap image, HashMap<String, Object> params, IndicoCallback<IndicoResult> callback)
         throws UnsupportedOperationException, IOException, IndicoException {
-        predict(BitmapUtils.toBase64(image), params, callback);
+        int size = api.getSize(params);
+        predict(BitmapUtils.toBase64(BitmapUtils.resize(image, size, minResize)), params, callback);
     }
 
     public void predict(Uri image, HashMap<String, Object> params, IndicoCallback<IndicoResult> callback)
         throws UnsupportedOperationException, IndicoException, IOException {
         int size = api.getSize(params);
-        predict(BitmapUtils.loadScaledBitmap(context, image, size, size), params, callback);
+        predict(BitmapUtils.loadScaledBitmap(context, image, size, size, minResize), params, callback);
     }
 
     public void predict(Uri image, IndicoCallback<IndicoResult> callback)
         throws UnsupportedOperationException, IndicoException, IOException {
-        predict(BitmapUtils.loadBitmap(context, image), null, callback);
+        int size = api.getSize(null);
+        predict(BitmapUtils.loadScaledBitmap(context, image, size, size, minResize), null, callback);
     }
 
     public void predict(Bitmap image, IndicoCallback<IndicoResult> callback)
         throws UnsupportedOperationException, IOException, IndicoException {
-        predict(BitmapUtils.toBase64(image), null, callback);
+        int size = api.getSize(null);
+        predict(BitmapUtils.resize(image, size, minResize), null, callback);
     }
 
     public void predict(String image, IndicoCallback<IndicoResult> callback)
@@ -77,9 +82,9 @@ public class ImageApi extends ApiClient {
         int size = api.getSize(null);
         for (Object uri : images) {
             if (uri instanceof Uri)
-                bitmaps.add(BitmapUtils.loadScaledBitmap(context, (Uri) uri, size, size));
+                bitmaps.add(BitmapUtils.loadScaledBitmap(context, (Uri) uri, size, size, minResize));
             else if (uri instanceof Bitmap)
-                bitmaps.add(BitmapUtils.toBase64((Bitmap) uri));
+                bitmaps.add(BitmapUtils.toBase64(BitmapUtils.resize((Bitmap) uri, size)));
             else if (uri instanceof String)
                 bitmaps.add((String) uri);
             else

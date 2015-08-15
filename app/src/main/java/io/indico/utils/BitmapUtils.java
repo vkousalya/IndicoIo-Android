@@ -23,8 +23,8 @@ public class BitmapUtils {
     /**
      * SCALE DOWN A BITMAP BEFORE LOADING
      */
-    public static String loadScaledBitmap(Context context, Uri uri, int width, int height) {
-        if (width == 0 || height == 0)
+    public static String loadScaledBitmap(Context context, Uri uri, int width, int height, boolean minResize) throws IndicoException {
+        if (width <= 0 || height <= 0)
             Log.e("BitmapHelper", "Height or Width is 0! " + width + "x" + height);
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -32,12 +32,84 @@ public class BitmapUtils {
         BitmapFactory.decodeStream(streamFromUri(context, uri), null, bmOptions);
 
         // Determine how much to scale down the image
-        int scaleFactor = calculateInSampleSize(bmOptions, width, height);
+        int scaleFactor = (int) calculateInSampleSize(bmOptions, width, height);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        return toBase64(BitmapFactory.decodeStream(streamFromUri(context, uri), null, bmOptions));
+        Bitmap bitmap =  BitmapFactory.decodeStream(streamFromUri(context, uri), null, bmOptions);
+        if (bitmap == null) {
+            throw new IndicoException("Could not find bitmap at resource id " + uri.toString());
+        }
+        if (!minResize) {
+            bitmap = resize(bitmap, width, height);
+        }
+        return toBase64(bitmap);
+
+    }
+
+    public static String loadScaledBitmap(Context context, int resource, int width, int height, boolean minResize) throws IndicoException {
+        if (width <= 0 || height <= 0)
+            Log.e("BitmapHelper", "Height or Width is 0! " + width + "x" + height);
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(context.getResources(), resource, bmOptions);
+
+        // Determine how much to scale down the image
+        int scaleFactor = (int) calculateInSampleSize(bmOptions, width, height);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resource, bmOptions);
+
+        if (bitmap == null) {
+            throw new IndicoException("Could not find bitmap at resource id " + resource);
+        }
+
+        if (!minResize)
+            bitmap = resize(bitmap, width, height);
+
+        return toBase64(bitmap);
+    }
+
+    public static Bitmap resize(Bitmap bitmap, int width, int height) throws IndicoException {
+        if (bitmap == null) {
+            throw new IndicoException("Provided bitmap is null.");
+        }
+        if (width == -1) {
+            return bitmap;
+        }
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
+
+    public static Bitmap resize(Bitmap bitmap, int square) throws IndicoException {
+        if (bitmap == null) {
+            throw new IndicoException("Provided bitmap is null.");
+        }
+        return resize(bitmap, square, square);
+    }
+
+    public static Bitmap resize(Bitmap bitmap, int square, boolean minResize) throws IndicoException {
+        if (bitmap == null) {
+            throw new IndicoException("Provided bitmap is null.");
+        }
+
+        int width = square,
+            height = square;
+
+        if (minResize) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.outWidth = bitmap.getWidth();
+            options.outHeight = bitmap.getHeight();
+            float divider = calculateInSampleSize(options, square, square);
+            width = (int) (square / divider);
+            height = (int) (square / divider);
+
+        }
+        return resize(bitmap, width, height);
     }
 
     private static java.io.InputStream streamFromUri(Context context, Uri uri) {
@@ -72,19 +144,19 @@ public class BitmapUtils {
 
 
     // Bitmap Loading Helpers
-    private static int calculateInSampleSize(
+    private static float calculateInSampleSize(
         BitmapFactory.Options options, int reqWidth, int reqHeight) {
         if (reqWidth == 0 || reqHeight == 0)
             Log.e("BitmapHelpers", "calculateInSampleSize was given 0 width or height");
         final int width = options.outWidth;
         final int height = options.outHeight;
-        int inSampleSize = 1;
+        float inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
             if (width > height) {
-                inSampleSize = (int) Math.ceil((float) height / (float) reqHeight);
+                inSampleSize = (float) height / (float) reqHeight;
             } else {
-                inSampleSize = (int) Math.ceil((float) width / (float) reqWidth);
+                inSampleSize = (float) width / (float) reqWidth;
             }
         }
 
@@ -97,7 +169,7 @@ public class BitmapUtils {
         return BitmapFactory.decodeStream(streamFromUri(context, uri), null, bmOptions);
     }
 
-
+    // For if we want to support pictures via camera
     public static Bitmap rotateBitmapIfNecessary(Bitmap source, Uri file) {
         int orientation = 0;
         try {

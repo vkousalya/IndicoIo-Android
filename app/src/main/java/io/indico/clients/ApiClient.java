@@ -60,8 +60,6 @@ public class ApiClient {
             }
         };
 
-        Log.i("DebugDebug", new Gson().toJson(postData));
-
         if (api.type == ApiType.Multi) {
             if (!postData.containsKey("apis")) {
                 throw new IndicoException("Api requests that involve multi apis must include apis argument");
