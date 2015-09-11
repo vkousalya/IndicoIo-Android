@@ -26,7 +26,7 @@ Installation:
 ------------
 Gradle - build.gradle file:
 ```groovy
-compile 'io.indico:android:1.0.+
+compile 'io.indico:android:1.0.+'
 ```
 
 Maven - latest jar:
