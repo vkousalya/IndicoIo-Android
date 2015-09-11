@@ -6,5 +6,5 @@ package io.indico.api;
 public enum ApiType {
     Multi,
     Image,
-    Text;
+    Text
 }

@@ -6,3 +6,5 @@
 /build
 /captures
 app/src/main/assets/indico.properties
+app/src/settings.xml
+target/

@@ -56,7 +56,7 @@ public class BatchImageTests extends InstrumentationTestCase {
             put("detect", true);
         }}, new IndicoCallback<BatchIndicoResult>() {
             @Override public void handle(BatchIndicoResult result) throws IndicoException {
-                assertTrue(result.getLocalizedFer().get(0).size() > 1);
+                assertTrue(result.getLocalizedFer().get(0).size() > 0);
                 signal.countDown();
             }
         });

@@ -14,7 +14,7 @@ public class IndicoClient {
 
     public static void init(String cloud) {
         String address = (cloud == null || cloud.isEmpty()) ?
-            "https://dev.indico.domains" :
+            "https://apiv2.indico.io" :
             "https://" + cloud + ".indico.domains";
 
         Gson gson = new GsonBuilder()

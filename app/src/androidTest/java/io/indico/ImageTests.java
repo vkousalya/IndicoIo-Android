@@ -51,7 +51,7 @@ public class ImageTests extends InstrumentationTestCase {
             put("detect", true);
         }}, new IndicoCallback<IndicoResult>() {
             @Override public void handle(IndicoResult result) throws IndicoException {
-                assertTrue(result.getLocalizedFer().size() > 1);
+                assertTrue(result.getLocalizedFer().size() > 0);
                 signal.countDown();
             }
         });
