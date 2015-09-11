@@ -97,6 +97,21 @@ public class BatchImageTests extends InstrumentationTestCase {
         });
         signal.await();
     }
+
+    public void test_batch_imageRecognition() throws Exception {
+        Indico.init(getInstrumentation().getContext(), apiKey, null);
+        final CountDownLatch signal = new CountDownLatch(1);
+        Indico.imageRecognition.predict(image_example, new HashMap<String, Object>() {{
+            put("top_n", 3);
+        }}, new IndicoCallback<BatchIndicoResult>() {
+            @Override public void handle(BatchIndicoResult result) throws IndicoException {
+                assertTrue(result.getImageRecognition().get(0).size() == 3);
+                signal.countDown();
+            }
+        });
+        signal.await();
+    }
+
     public void test_batch_contentFiltering() throws Exception {
         Indico.init(getInstrumentation().getContext(), apiKey, null);
         final CountDownLatch signal = new CountDownLatch(1);
