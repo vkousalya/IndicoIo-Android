@@ -12,7 +12,7 @@ import io.indico.network.IndicoClient;
  */
 public class Indico {
     public static TextApi sentiment, sentimentHQ, political, language, textTags, keywords, namedEntities, twitterEngagement, intersections, text;
-    public static ImageApi fer, facialFeatures, imageFeatures, contentFiltering, facialLocalization, image;
+    public static ImageApi fer, facialFeatures, imageFeatures, imageRecognition, contentFiltering, facialLocalization, image;
 
     public static Indico init(Context context, String apiKey, String cloud) {
         Indico indico = new Indico();
@@ -32,6 +32,7 @@ public class Indico {
         fer = new ImageApi(context, Api.FER, apiKey);
         facialFeatures = new ImageApi(context, Api.FacialFeatures, apiKey);
         imageFeatures = new ImageApi(context, Api.ImageFeatures, apiKey);
+        imageRecognition = new ImageApi(context, Api.ImageRecognition, apiKey);
         contentFiltering = new ImageApi(context, Api.ContentFiltering, apiKey);
         facialLocalization = new ImageApi(context, Api.FacialLocalization, apiKey);
         image = new ImageApi(context, Api.MultiImage, apiKey);
