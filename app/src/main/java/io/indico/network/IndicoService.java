@@ -16,6 +16,7 @@ public interface IndicoService {
         @Path("api") String api,
         @Body Map<String, Object> data,
         @Query("key") String key,
+        @Query("version") Integer version,
         IndicoCallback<Map<String, Object>> callback
     );
 
@@ -24,6 +25,7 @@ public interface IndicoService {
         @Path("api") String api,
         @Body Map<String, Object> data,
         @Query("key") String key,
+        @Query("version") Integer version,
         IndicoCallback<Map<String, Object>> callback
     );
 

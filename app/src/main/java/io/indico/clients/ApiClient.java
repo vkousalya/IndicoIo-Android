@@ -43,8 +43,11 @@ public class ApiClient {
             postData.put("data", data);
         }
 
-        if (extraParams != null)
+        Integer version = null;
+        if (extraParams != null) {
+            version = extraParams.containsKey("version") ? (Integer) extraParams.get("version") : null;
             postData.putAll(extraParams);
+        }
 
         // Build the callback
         IndicoCallback<Map<String, Object>> parent_callback = new IndicoCallback<Map<String, Object>>() {
@@ -76,9 +79,9 @@ public class ApiClient {
                 IndicoClient.api.multi_call(api.toString(), postData, sb.substring(0, sb.length() - 1), apiKey, parent_callback);
         } else {
             if (batch)
-                IndicoClient.api.batch_call(api.toString(), postData, apiKey, parent_callback);
+                IndicoClient.api.batch_call(api.toString(), postData, apiKey, version, parent_callback);
             else
-                IndicoClient.api.call(api.toString(), postData, apiKey, parent_callback);
+                IndicoClient.api.call(api.toString(), postData, apiKey, version, parent_callback);
         }
     }
 }
