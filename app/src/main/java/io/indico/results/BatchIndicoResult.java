@@ -127,6 +127,11 @@ public class BatchIndicoResult {
     }
 
     @SuppressWarnings("unchecked")
+    public List<Map<String, Double>> getImageRecognition() throws IndicoException {
+        return (List<Map<String, Double>>) get(Api.ImageRecognition);
+    }
+
+    @SuppressWarnings("unchecked")
     public List<List<Double>> getFacialFeatures() throws IndicoException {
         return (List<List<Double>>) get(Api.FacialFeatures);
     }

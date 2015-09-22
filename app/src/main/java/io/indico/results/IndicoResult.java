@@ -115,6 +115,11 @@ public class IndicoResult {
     }
 
     @SuppressWarnings("unchecked")
+    public Map<String, Double> getImageRecognition() throws IndicoException {
+        return (Map<String, Double>) get(Api.ImageRecognition);
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Double> getFacialFeatures() throws IndicoException {
         return (List<Double>) get(Api.FacialFeatures);
     }

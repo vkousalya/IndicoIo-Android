@@ -21,7 +21,8 @@ public enum Api {
 
     // IMAGE APIS
     FER(ApiType.Image, "fer", "size", 64, "minResize", false),
-    ImageFeatures(ApiType.Image, "imagefeatures", "size", 64, "minResize", false),
+    ImageFeatures(ApiType.Image, "imagefeatures", "size", 144, "minResize", true),
+    ImageRecognition(ApiType.Image, "imagerecognition", "size", 144, "minResize", true),
     FacialFeatures(ApiType.Image, "facialfeatures", "size", 64, "minResize", false),
     ContentFiltering(ApiType.Image, "contentfiltering", "size", 128, "minResize", true),
     FacialLocalization(ApiType.Image, "faciallocalization", "size", -1, "minResize", false),

@@ -116,6 +116,20 @@ public class ImageTests extends InstrumentationTestCase {
         signal.await();
     }
 
+    public void test_image_recognition() throws Exception {
+        Indico.init(getInstrumentation().getContext(), apiKey, null);
+        final CountDownLatch signal = new CountDownLatch(1);
+        Indico.imageRecognition.predict(image_example, new HashMap<String, Object>() {{
+            put("top_n", 3);
+        }}, new IndicoCallback<IndicoResult>() {
+            @Override public void handle(IndicoResult result) throws IndicoException {
+                assertTrue(result.getImageRecognition().size() == 3);
+                signal.countDown();
+            }
+        });
+        signal.await();
+    }
+
     public void test_image() throws Exception {
         Indico.init(getInstrumentation().getContext(), apiKey, null);
         final CountDownLatch signal = new CountDownLatch(1);
